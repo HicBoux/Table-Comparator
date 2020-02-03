@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Tables Comparator</title>
+</head>
+<body>
+<h1> Tables Comparator </h1>
+<h2> Upload the two CSV to compare :</h2>
+<form method=post enctype=multipart/form-data>
+<div class="files">
+    <input type=file name=file1>
+    <input type=file name=file2>
+    <input type=submit name="action" value="Compare">
+</div>
+</form>
+<h2> Global Statistics per Table </h2>
+
+<table border="1" class="dataframe">
+  <tr>
+    <th>Stastistics Name</th>
+    <th>Table A</th> 
+    <th>Table B</th>
+  </tr>
+  <tr>
+    <th>Number of rows</th>
+    <td>{% if stats_df1 != None %} {{ stats_df1[0][1] }} {% else %} {% endif %}</td>
+    <td>{% if stats_df2 != None %} {{ stats_df2[0][1] }} {% else %} {% endif %}</td>
+  </tr>
+  <tr>
+    <th>Number of columns</th>
+    <td>{% if stats_df1 != None %} {{ stats_df1[1][1] }} {% else %} {% endif %}</td>
+    <td>{% if stats_df2 != None %} {{ stats_df2[1][1] }} {% else %} {% endif %}</td>
+  </tr>
+  <tr>
+    <th>Number of duplicates</th>
+    <td>{% if stats_df1 != None %} {{ stats_df1[2][1] }} {% else %} {% endif %}</td>
+    <td>{% if stats_df2 != None %} {{ stats_df2[2][1] }} {% else %} {% endif %}</td>
+  </tr> 
+  <tr>
+    <th>Number of rows with at least one NaN value</th>
+    <td>{% if stats_df1 != None %} {{ stats_df1[3][1] }} {% else %} {% endif %}</td>
+    <td>{% if stats_df2 != None %} {{ stats_df2[3][1] }} {% else %} {% endif %}</td>
+  </tr> 
+  <tr>
+    <th>Header</th>
+    <td>{% if stats_df1 != None %} {{ stats_df1[4][1] }} {% else %} {% endif %}</td>
+    <td>{% if stats_df2 != None %} {{ stats_df2[4][1] }} {% else %} {% endif %}</td>
+  </tr> 
+  <tr>
+    <th>Data Types of the Header</th>
+    <td>{% if stats_df1 != None %} {{ stats_df1[5][1] }} {% else %} {% endif %}</td>
+    <td>{% if stats_df2 != None %} {{ stats_df2[5][1] }} {% else %} {% endif %}</td>
+  </tr> 
+</table>
+
+<br>
+<p>
+NB: The data types and the names of the header are given in the same respective order. The first data type corresponds to the first name, etc...
+</p>
+
+<p><h2> Descriptive Statistics</h2></p>
+
+{% if comparison_summary != None %} {{ comparison_summary | safe}} {% else %} {% endif %}
+
+<p>NB: The comparison is computed among numeric columns only.</p>
+<script>
+var height = Math.min(600,window.screen.availHeight)
+var width = Math.min(600,window.screen.availWidth)
+</script>
+<p><h2> Descriptive Graphs </h2></p>
+
+Charts below can show data from both Table "Left" or "Right" : the title of the chart is the name of the column it comes from. <br><br>
+
+{% if chart_data.mon_charts != None %}
+    {% if chart_data.mono_charts|length == 0  %} There are no unique columns between both input DataFrames.{% else %}{% endif %}
+    {% for i in range(chart_data.mono_charts|length) %}
+            <script src="http://d3js.org/d3.v3.min.js"></script>
+            <script type="text/javascript">
+                // Set global variables
+                var data = {{ chart_data.mono_charts[i] | safe }}
+                var title = "{{ chart_names.mono_charts[i] | safe }}"
+                var numberOfRecords = {{ chart_data.mono_charts[i]|length }}
+                var yMaxRange = Math.abs(Math.max.apply(Math,data.map(function(o){return o._y;})) - Math.min.apply(Math,data.map(function(o){return o._y;})));           
+            </script>
+            <script src="{{url_for('static', filename='js/mono_chart.js')}}"></script> <br>
+    {% endfor %}
+{% else %}
+{% endif %}
+
+<br><p>NB: The indexes displayed in the charts are just the row number of the record found in the CSV.</p>
+
+<p><h2> Comparison Graphs </h2></p>
+
+Input <font color="steelblue">Table "Left"</font> is represented in <font color="steelblue">blue</font> 
+and <font color="red">Table "Right"</font> in <font color="red">red</font>.<br><br>
+
+{% if chart_data.comparative_charts != None %}
+    {% if chart_data.comparative_charts|length == 0  %} There are no common columns between both input DataFrames.{% else %}{% endif %}
+    {% for i in range(chart_data.comparative_charts|length) %}
+            <script src="http://d3js.org/d3.v3.min.js"></script>
+            <script type="text/javascript">
+                var data = {{ chart_data.comparative_charts[i] | safe }};
+                var title = "{{ chart_names.comparative_charts[i] | safe }}"
+                var numberOfRecords = {{ chart_data.comparative_charts[i]|length }}
+                var y1Range = Math.abs(Math.max.apply(Math,data.map(function(o){return o._y1;})) - Math.min.apply(Math,data.map(function(o){return o._y1;})));
+                var y2Range = Math.abs(Math.max.apply(Math,data.map(function(o){return o._y2;})) - Math.min.apply(Math,data.map(function(o){return o._y2;})));
+                var yMaxRange = Math.max(y1Range,y2Range)      
+            </script>
+            <script src="{{url_for('static', filename='js/comparative_chart.js')}}"></script> <br>
+    {% endfor %}
+{% else %}
+{% endif %}
+
+<br><p>NB: The indexes displayed in the charts are just the row number of the record found in the CSV.</p>
+
+</body>
+</html>
