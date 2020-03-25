@@ -1,7 +1,7 @@
 <h1>Table Comparator : a Flask app to compare two CSV of data in terms of statistics </h1>
 
-Through this simple app, it becomes simpler to compare two tables of data (saved as .csv) in terms of meta statistics, 
-descriptive statistics and distributions. Thus the app returns :<br/>
+Through this simple app, you can very quickly and easily compare two tables of data (saved as .csv) in terms of meta statistics, 
+descriptive statistics and distributions, just by uploading two CSV files from a graphical interface. Thus the app returns :<br/>
  -Number of rows, columns, duplicates, and NaN for each CSV file.<br/>
  -Name of the columns in the header and its datatypes for each CSV file.<br/>
  -Based on column names, a summary and comparison of them (in case of match) through basic indicators
@@ -10,9 +10,9 @@ like the mean, median, quantiles, maximum, minimum, standard deviation...<br/>
  -Single line graphs with D3.js visualisations when a column is only in one csv.<br/>
 
 <h2>Requirements</h2>
-Python 3 <br/>
-Python following libraries : Pandas, Numpy, Flask <br/>
-An internet connection in order to load the D3.js library<br/>
+-Python 3 <br/>
+-Python following libraries : Pandas, Numpy, Flask <br/>
+-An internet connection in order to load the D3.js library<br/>
 (It can possibly on older versions, but not tested yet.)
 
 <h2>How to set it :</h2>
@@ -20,7 +20,7 @@ An internet connection in order to load the D3.js library<br/>
 1) Install your Python environment with all the necessary packages. Be sure Flask is well configured.
 2) Download from this Github repository the folder of the app named "Table_Comparator".
 3) Start a terminal/shell window and move to current directory of the app : ```cd /path_to_the_app/Table_comparator/```
-4) Start the app by executing the Python script "csv_uploader.py" : ``python csv_uploader.py```
+4) Start the app by executing the Python script "csv_uploader.py" : ```python csv_uploader.py```
 5) Open your web browser to your Flask configured URL or by default at "localhost:5000". The app would appear with a title in blue !
 6) Below the section "Upload the two CSV to compare :", click on the "Choose file" left button and upload your first CSV.
 Then click on the right one and upload your second CSV file. Once done, let's launch the algorithm by clicking on "Compare" !
