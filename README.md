@@ -28,6 +28,10 @@ Then click on the right one and upload your second CSV file. Once done, let's la
 longer to be drawn, but you will be able to first read the summaries during the load of the graphs.
 8) Enjoy !
 
+<h2>Use Case</h2>
+-Although operational and ready-to-use, this app is nonetheless a POC.<br/>
+-Since D3.js doesn't work efficiently on huge datasets, this app is scaled for CSVs with less than 10-15 numerical columns and 2000 rows approximately.<br/>
+-An ideal usage of this app : compare historical data of 2 stocks, check differences between 2 product/species sheets, analyze 2 bills etc...<br/>
 
 <h2>References</h2>
 
