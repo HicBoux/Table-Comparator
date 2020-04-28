@@ -1,26 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Dec 15 16:12:53 2019
-
-A FAIRE : 
-    Créer une fonction qui si les 2 tableaux ont la même longueur, le même index, compare pour chaque colonne commune (même nom
-    et même type) la répartition sous forme de json ==> ou alors sommer les index genre données temporelles
-        ==> fait appel à un bout de code JS 1                
-                                                                                                                       
-    
-    Créer une fonction qui pour les colonnes non communes affichent la répartition selon l'index et la colonne
-        ==> fait appel à un bout de code JS 2
-        
-        RESTE PLUS QU'A FAIRE LE JS + BOUCLE JINJA + INTEGRER LE CSS DANS UN FICHIER A PART
-        https://www.sitepoint.com/creating-simple-line-bar-charts-using-d3-js/
-        https://codepen.io/jay3dec/pen/glLxK/
-        
-        AJUSTER LE MAX ET MIN DE L'AXE X / Y POUR ÊTRE UN PEU ADAPTATIF
-        METTRE UNE MARGE GAUCHE POUR AFFICHER LE LIBELLE DE L AXE Y DANS COMPARATIVE CHARTS
-        AJOUTER DES CERCLES ET DES AXES Y NEGATIFS
-        
-@author: hichem
+Created on Sun Dec 15 16:12:53 2019 
+@author: HicBoux
 """
 
 from flask import Flask, request, render_template
@@ -31,12 +13,14 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
+    """Main function that read the input CSV files, call the other
+    which compute statistics and charts, and return the results."""
+    
     stats_df1 = None
     stats_df2 = None
     comparison_summary = None
     chart_data = None
     chart_names = None
-    test = None
     
     if request.method == 'POST':
         file1 = request.files.get('file1', None)
@@ -59,6 +43,8 @@ def upload_file():
                            chart_names = chart_names)
 
 def get_global_stats(df):
+    """Compute the metadata statistics of a given DataFrame and put them in a 2D list."""
+    
     stats = []
     stats.append(["Number of rows", df.shape[0] ])
     stats.append(["Number of columns", df.shape[1] ])
@@ -69,6 +55,9 @@ def get_global_stats(df):
     return stats
         
 def get_descriptive_comparison(df1, df2):
+    """Compute descriptive statistics that compare 2 input DataFrames and return a result 
+    DataFrame."""
+    
     summary1 = df1.describe()
     summary2 = df2.describe()
     
@@ -97,6 +86,9 @@ def get_descriptive_comparison(df1, df2):
     return comparison_summary
 
 def generate_charts(df1, df2):
+    """Compute line charts for both unique and common columns found in the 2 input DataFrames 
+    and return a result JSON that will be read by JS scripts using D3.js."""
+    
     mono_charts_json = []
     mono_charts_names = []
     comparative_charts_json = []
@@ -134,8 +126,12 @@ def generate_charts(df1, df2):
             "comparative_charts":comparative_charts_names} 
 
 def df_html_display(df):
+    """Apply some HTML/CSS display options for the input DataFrame."""
+    
     config_df = df.style
     return config_df.render()
 
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

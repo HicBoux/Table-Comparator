@@ -7,6 +7,7 @@
 </head>
 <body>
 <h1> Tables Comparator </h1>
+<!--Part 0 : Upload the 2 CSV files. -->
 <h2> Upload the two CSV to compare :</h2>
 <form method=post enctype=multipart/form-data>
 <div class="files">
@@ -14,6 +15,7 @@
     <input type=file name=file2>
     <input type=submit name="action" value="Compare">
 </div>
+<!--Part 1 : The Metadata Statistics table. -->
 </form>
 <h2> Global Statistics per Table </h2>
 
@@ -23,8 +25,8 @@
     <th>Table A</th> 
     <th>Table B</th>
   </tr>
-  <tr>
-    <th>Number of rows</th>
+  <tr> <!--The table is created thanks numerical variables got from the Python script. -->
+    <th>Number of rows</th> 
     <td>{% if stats_df1 != None %} {{ stats_df1[0][1] }} {% else %} {% endif %}</td>
     <td>{% if stats_df2 != None %} {{ stats_df2[0][1] }} {% else %} {% endif %}</td>
   </tr>
@@ -60,15 +62,20 @@
 NB: The data types and the names of the header are given in the same respective order. The first data type corresponds to the first name, etc...
 </p>
 
+<!--Part 1 : The Comparison Descriptive Statistics for numerical columns of the input CSVs. -->
 <p><h2> Descriptive Statistics</h2></p>
 
 {% if comparison_summary != None %} {{ comparison_summary | safe}} {% else %} {% endif %}
 
 <p>NB: The comparison is computed among numeric columns only.</p>
+
+ <!--Get of the dimensions of the following graphs : the min between 600px and the screen size -->
 <script>
 var height = Math.min(600,window.screen.availHeight)
 var width = Math.min(600,window.screen.availWidth)
 </script>
+
+<!--Part 2 : Line charts for numerical columns found as "unique". -->
 <p><h2> Descriptive Graphs </h2></p>
 
 Charts below can show data from both Table "Left" or "Right" : the title of the chart is the name of the column it comes from. <br><br>
@@ -91,6 +98,7 @@ Charts below can show data from both Table "Left" or "Right" : the title of the 
 
 <br><p>NB: The indexes displayed in the charts are just the row number of the record found in the CSV.</p>
 
+<!--Part 3 : Line charts for numerical columns found in both CSV, according to their column names. -->
 <p><h2> Comparison Graphs </h2></p>
 
 Input <font color="steelblue">Table "Left"</font> is represented in <font color="steelblue">blue</font> 
@@ -101,9 +109,11 @@ and <font color="red">Table "Right"</font> in <font color="red">red</font>.<br><
     {% for i in range(chart_data.comparative_charts|length) %}
             <script src="http://d3js.org/d3.v3.min.js"></script>
             <script type="text/javascript">
+                // Set global variables
                 var data = {{ chart_data.comparative_charts[i] | safe }};
                 var title = "{{ chart_names.comparative_charts[i] | safe }}"
                 var numberOfRecords = {{ chart_data.comparative_charts[i]|length }}
+                //Match both first and second CSV ranges by choosing the max between them
                 var y1Range = Math.abs(Math.max.apply(Math,data.map(function(o){return o._y1;})) - Math.min.apply(Math,data.map(function(o){return o._y1;})));
                 var y2Range = Math.abs(Math.max.apply(Math,data.map(function(o){return o._y2;})) - Math.min.apply(Math,data.map(function(o){return o._y2;})));
                 var yMaxRange = Math.max(y1Range,y2Range)      
